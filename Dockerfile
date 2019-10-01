@@ -121,5 +121,5 @@ RUN curl -sL --retry 3 \
 
 USER airflow
 WORKDIR ${AIRFLOW_USER_HOME}
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["webserver"] # set default arg for entrypoint
+ENTRYPOINT ["/entrypoint.sh","webserver"]
+# CMD ["webserver"] # set default arg for entrypoint
