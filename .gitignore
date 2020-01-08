@@ -24,3 +24,10 @@ sftp-config.json
 
 # Python
 __pycache__
+
+# Self
+.gitignore
+
+# Image files
+files/*
+
