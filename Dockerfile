@@ -1,5 +1,6 @@
-# VERSION 1.10.6
+# VERSION 1.10.7
 # AUTHOR: Matthieu "Puckel_" Roisil
+# MODIFIED: Sky McKinley (sgm7@)
 # DESCRIPTION: Basic Airflow container
 # BUILD: docker build --rm -t puckel/docker-airflow .
 # SOURCE: https://github.com/puckel/docker-airflow
@@ -12,10 +13,10 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-ARG AIRFLOW_VERSION=1.10.6
+ARG AIRFLOW_VERSION=1.10.7
 ARG AIRFLOW_USER_HOME=/usr/local/airflow
-ARG AIRFLOW_DEPS=""
-ARG PYTHON_DEPS=""
+ARG AIRFLOW_DEPS="oracle"
+ARG PYTHON_DEPS="cx_Oracle pandas"
 ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
 
 # Define en_US.
@@ -72,6 +73,9 @@ RUN set -ex \
 
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
+COPY files/oracle/* /opt/oracle/
+
+RUN export LD_LIBRARY_PATH=/opt/oracle/instantclient_19_3:$LD_LIBRARY_PATH
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
