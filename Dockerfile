@@ -35,6 +35,7 @@ RUN set -ex \
         libffi-dev \
         libpq-dev \
         git \
+        libaio1 \
     ' \
     && apt-get update -yqq \
     && apt-get upgrade -yqq \
