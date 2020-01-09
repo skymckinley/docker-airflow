@@ -74,7 +74,7 @@ RUN set -ex \
 
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
-COPY files/oracle/instantclient_19_3/* /opt/oracle/instantclient_19_3
+COPY files/oracle/instantclient_19_3/* /opt/oracle/instantclient_19_3/
 
 ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3:$LD_LIBRARY_PATH
 
