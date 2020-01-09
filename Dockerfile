@@ -49,6 +49,9 @@ RUN set -ex \
         rsync \
         netcat \
         locales \
+        libaio1 \
+        unzip \
+        wget \
     && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
     && locale-gen \
     && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
@@ -70,13 +73,16 @@ RUN set -ex \
         /var/tmp/* \
         /usr/share/man \
         /usr/share/doc \
-        /usr/share/doc-base
+        /usr/share/doc-base \
+    && wget -O /tmp/instantclient.zip https://download.oracle.com/otn_software/linux/instantclient/195000/instantclient-basiclite-linux.x64-19.5.0.0.0dbru.zip \
+    && mkdir /opt/oracle \
+    && cd /opt/oracle \
+    && unzip /tmp/instantclient.zip 
 
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
-COPY files/oracle/instantclient_19_3/* /opt/oracle/instantclient_19_3/
 
-ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_5:$LD_LIBRARY_PATH
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
