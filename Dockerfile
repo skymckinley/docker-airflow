@@ -74,11 +74,14 @@ RUN set -ex \
 
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
-COPY files/oracle/* /opt/oracle/
+COPY files/oracle/instantclient_19_3/* /opt/oracle/instantclient_19_3
 
-RUN export LD_LIBRARY_PATH=/opt/oracle/instantclient_19_3:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3:$LD_LIBRARY_PATH
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
+
+# Airflow Connections
+ENV AIRFLOW_CONN_SFTP_BAY_CLOVER sftp://cloversvc:xsw21qaz@bay.humboldt.edu:22
 
 EXPOSE 8080 5555 8793
 
