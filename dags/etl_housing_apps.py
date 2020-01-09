@@ -4,12 +4,17 @@ Housing Applications ETL
 
 from datetime import datetime, timedelta
 import pandas as pd
+import logging
+import os
 
 from airflow import DAG
 from airflow.contrib.hooks import SFTPHook, SSHHook
 from airflow.contrib.operators.sftp_operator import SFTPOperator
 from airflow.operators.python_operator import ShortCircuitOperator, PythonOperator
 from airflow.hooks.oracle_hook import OracleHook
+from airflow.operators.oracle_operator import OracleOperator
+
+os.environ['NLS_LANG'] = '.AL32UTF8'
 
 SFTP_CONN_ID = 'sftp_bay_clover'
 DB_CONN_ID = 'oie_ws'
@@ -52,11 +57,15 @@ def check_for_file_py(**kwargs):
         return False
 
 def bulk_load_csv(table, **kwargs):
-    df = pd.read_csv(LOCAL_FILE_PATH + '/' + LOCAL_FILE_NAME)
-    rows = df.itertuples()
+    local_filepath = kwargs.get('local_filepath')
+    oracle_conn_id = kwargs.get('oracle_conn_id')
 
-    local_filepath = LOCAL_FILE_PATH + '/' + LOCAL_FILE_NAME
-    conn = OracleHook(conn_name_attr=DB_CONN_ID)
+    df = pd.read_csv(local_filepath)
+    df = df.astype(str)
+    
+    rows = df.values.tolist()
+
+    conn = OracleHook(oracle_conn_id=oracle_conn_id)
     conn.bulk_insert_rows(table=table, rows=rows)
     return table
 
@@ -76,12 +85,21 @@ sftp = SFTPOperator(task_id='retrieve_file',
         operation="get",
         dag=dag)
 
+clear_extract_table = OracleOperator(
+        task_id = 'clear_extract_table',
+        sql = 'delete from oie_ws.extr_oie_housing_apps',
+        oracle_conn_id = DB_CONN_ID,
+        dag = dag)
+
 extract = PythonOperator(
         task_id='load_file_to_db',
         provide_context=True,
         python_callable=bulk_load_csv,
-        op_kwargs={'table': 'EXTR_OIE_HOUSING_APPS'},
+        op_kwargs={'table': 'EXTR_OIE_HOUSING_APPS',
+            'oracle_conn_id':DB_CONN_ID,
+            'local_filepath':LOCAL_FILE_PATH + '/' + LOCAL_FILE_NAME},
         dag=dag)
 
 sftp.set_upstream(filecheck)
 extract.set_upstream(sftp)
+extract.set_upstream(clear_extract_table)
