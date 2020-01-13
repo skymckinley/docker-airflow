@@ -39,7 +39,7 @@ RUN set -ex \
     ' \
     && apt-get update -yqq \
     && apt-get upgrade -yqq \
-    && apt-get install -yqq --no-install-recommends \
+    && apt-get install -yqq \
         $buildDeps \
         freetds-bin \
         build-essential \
@@ -88,6 +88,7 @@ RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
 # Airflow Connections
 ENV AIRFLOW_CONN_SFTP_BAY_CLOVER sftp://cloversvc:xsw21qaz@bay.humboldt.edu:22
+ENV AIRFLOW_CONN_OIE_WS oracle://OIE_WS:P%40nd%40P0w3r@dwdb2.humboldt.edu:1521/dwstuprd
 
 EXPOSE 8080 5555 8793
 
