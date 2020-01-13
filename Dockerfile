@@ -2,7 +2,8 @@
 # AUTHOR: Matthieu "Puckel_" Roisil
 # MODIFIED: Sky McKinley (sgm7@)
 # DESCRIPTION: Basic Airflow container
-# BUILD: docker build --rm -t puckel/docker-airflow .
+# BUILD: docker build --rm -t devel/hsu-etl .
+# RUN: docker run --name hsu-etl-dev -d -p 8081:8080 -v /home/sgm7/docker-containers/docker-airflow/dags:/usr/local/airflow/dags devel/hsu-etl
 # SOURCE: https://github.com/puckel/docker-airflow
 
 FROM python:3.7-slim-stretch
@@ -39,6 +40,7 @@ RUN set -ex \
     ' \
     && apt-get update -yqq \
     && apt-get upgrade -yqq \
+    && apt-get install -yqq apt-utils \
     && apt-get install -yqq \
         $buildDeps \
         freetds-bin \
@@ -49,7 +51,6 @@ RUN set -ex \
         rsync \
         netcat \
         locales \
-        libaio1 \
         unzip \
         wget \
     && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
@@ -86,9 +87,12 @@ ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_5:$LD_LIBRARY_PATH
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
+RUN apt-get update
+RUN apt-get install libaio1
+
 # Airflow Connections
 ENV AIRFLOW_CONN_SFTP_BAY_CLOVER sftp://cloversvc:xsw21qaz@bay.humboldt.edu:22
-ENV AIRFLOW_CONN_OIE_WS oracle://OIE_WS:P%40nd%40P0w3r@dwdb2.humboldt.edu:1521/dwstuprd
+# ENV AIRFLOW_CONN_OIE_WS oracle://OIE_WS:P%40nd%40P0w3r@dwdb2.humboldt.edu:1521/dwhumprd?service_name=dwhumprd.dwdb2.humboldt.edu
 
 EXPOSE 8080 5555 8793
 
