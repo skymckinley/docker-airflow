@@ -24,4 +24,4 @@ class HSU_ETL:
     def hash(self, *args):
         hash_string = ''.join(str(args))
 
-        return hashlib.md5(hash_string).hexdigest()
+        return hashlib.md5(hash_string.encode('utf-8')).hexdigest()
