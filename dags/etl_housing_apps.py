@@ -71,10 +71,6 @@ def bulk_load_csv(table, **kwargs):
     conn.bulk_insert_rows(table=table, rows=rows)
     return table
 
-def load(**kwargs):
-    return 1
-
-
 filecheck = ShortCircuitOperator(
                 task_id='check_for_file',
                 python_callable=check_for_file_py,
