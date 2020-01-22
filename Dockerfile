@@ -92,7 +92,6 @@ RUN apt-get install libaio1
 
 # Airflow Connections
 ENV AIRFLOW_CONN_SFTP_BAY_CLOVER sftp://cloversvc:xsw21qaz@bay.humboldt.edu:22
-# ENV AIRFLOW_CONN_OIE_WS oracle://OIE_WS:P%40nd%40P0w3r@dwdb2.humboldt.edu:1521/dwhumprd?service_name=dwhumprd.dwdb2.humboldt.edu
 
 EXPOSE 8080 5555 8793
 
