@@ -4,7 +4,7 @@ select
     to_number(entryapplicationid) application_id,
     substr(hsuid, 1, 9) emplid,
     entryname applicant_name,
-    termdescription residence_session,
+    trim(termdescription) residence_session,
     classificationdescription1 student_category,
     applicationstatusdescription2 application_status,
     to_date(replace(receiveddate,'nan',''), 'MM/DD/YYYY HH24:MI') app_rcvd_dttm,
