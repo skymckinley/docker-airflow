@@ -110,7 +110,8 @@ extract = PythonOperator(
 
 load = OracleOperator(
         task_id = 'load',
-        sql = 'sql/load_app_dimensions.sql',
+        sql = ('sql/load_residence_session_dims.sql',
+            'sql/load_app_dimensions.sql'),
         oracle_conn_id = DB_CONN_ID,
         dag = dag)
 
