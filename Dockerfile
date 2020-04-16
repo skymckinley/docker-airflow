@@ -90,9 +90,6 @@ RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 RUN apt-get update
 RUN apt-get install libaio1
 
-# Airflow Connections
-ENV AIRFLOW_CONN_SFTP_BAY_CLOVER sftp://cloversvc:xsw21qaz@bay.humboldt.edu:22
-
 EXPOSE 8080 5555 8793
 
 USER airflow
